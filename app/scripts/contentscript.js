@@ -130,8 +130,16 @@ function getMap() {
   }
 }
 
+function sizeThumbnails() {
+  each('.container-results .image img', function(item) {
+    item.style.maxWidth = '200px';
+    item.style.maxHeight = '200px';
+  });
+}
+
 function start() {
   doRotate();
+  sizeThumbnails();
   getMap();
 }
 
