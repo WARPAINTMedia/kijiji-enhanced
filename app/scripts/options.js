@@ -83,7 +83,7 @@ window.Zepto(function($) {
       },
       zoomLevel: {
         type: 'number',
-        value: 12
+        value: 15
       }
     }, function(items) {
       for(var value in items) {
@@ -96,6 +96,6 @@ window.Zepto(function($) {
     });
   }
   $('input[type=checkbox], input[type=radio]').on('click', save);
-  $('input[type=text], input[type=number], input[type=search], select').on('keyup', save);
+  $('input[type=text], input[type=number], input[type=search], select').on('input', save);
   $(document).ready(restore);
 });
