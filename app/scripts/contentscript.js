@@ -8,6 +8,7 @@ var each = function(query, fn) {
   Array.prototype.slice.call(qAll(query), 0).forEach(fn);
 };
 
+// my main fetching function
 function ajax(addr, blob, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', addr, true);
@@ -26,6 +27,7 @@ function ajax(addr, blob, callback) {
   xhr.send();
 }
 
+// default settings
 var settings = {
   zoomLevel: {
     type: 'checkbox',
@@ -46,8 +48,11 @@ function addMap(lat, lng, link) {
     image.height = '390';
     image.width = '547';
     image.style.maxWidth = '100%';
+    // dont do anything until loaded
     image.onload = function() {
+      // inject a nice title and a link
       q('#UserContent').innerHTML += '<hr><h1><em>Enhanced</em> Map Preview</h1><br><a href="https://maps.google.com/maps?q=' + link + '" target="_blank" title="Open In Google Maps" id="NewMapLink" style="display: block"></a>';
+      // throw the image in that new link
       q('#NewMapLink').appendChild(image);
     };
   });
@@ -55,7 +60,7 @@ function addMap(lat, lng, link) {
 
 function doRotate() {
   var container = q('#MainContainer .img-scroll');
-
+  // make sure we are on the right page, and the setting is on
   if (container && settings.enableRotate.value) {
     // add some space for the button
     var area = q('#PageViewImage .centered-item.large-image');
@@ -121,9 +126,9 @@ function getMap() {
     // make this url-safe
     var link = encodeURIComponent(map.parentElement.innerText.split('\n')[0]);
     ajax('https://maps.googleapis.com/maps/api/geocode/json?address=' + link + '&sensor=true', false, function(res) {
-      // res = JSON.parse(res);
       if (typeof(res) !== 'undefined') {
         res = res.results[0].geometry.location;
+        // fetch a new map with that location and link
         addMap(res.lat, res.lng, link);
       }
     });
@@ -131,6 +136,7 @@ function getMap() {
 }
 
 function sizeThumbnails() {
+  // apply these styles to the list thumbnails
   each('.container-results .image img', function(item) {
     item.style.maxWidth = '200px';
     item.style.maxHeight = '200px';
@@ -146,5 +152,6 @@ function start() {
 chrome.storage.sync.get(['zoomLevel', 'enableRotate'], function(result) {
   settings.zoomLevel = result.zoomLevel;
   settings.enableRotate = result.enableRotate;
+  // there is no DOMReady in extensions, we have a start() though
   start();
 });
