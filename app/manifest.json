@@ -19,7 +19,8 @@
     {
       "matches": [
         "http://*.kijiji.ca/*",
-        "https://*.kijiji.ca/*"
+        "https://*.kijiji.ca/*",
+        "https://maps.googleapis.com/maps/api/*"
       ],
       "css": [
         "styles/main.css"
@@ -31,10 +32,14 @@
       "all_frames": false
     }
   ],
+  "web_accessible_resources" : [
+    "https://maps.googleapis.com/maps/api/*"
+  ],
   "permissions": [
     "tabs",
     "storage",
     "http://*.kijiji.ca/*",
-    "https://*.kijiji.ca/*"
+    "https://*.kijiji.ca/*",
+    "https://maps.googleapis.com/maps/api/*"
   ]
 }

@@ -50,23 +50,26 @@ window.Zepto(function($) {
   $('.mainview > *:not(.selected)').css('display', 'none');
   // Saves options to chrome.storage
   function save(e) {
-    var item = {};
-    var value = e.target.value;
-    if (e.target.type === 'checkbox' || e.target.type === 'radio') {
-      value = e.target.checked;
-    }
-    item[e.target.id] = {
-      value: value,
-      type: e.target.type
-    };
-    chrome.storage.sync.set(item, function() {
-      // Update status to let user know options were saved.
-      var status = $('#status');
-      status.text('Options saved.');
-      setTimeout(function() {
-        status.text('');
-      }, 750);
-    });
+    clearTimeout(window.delayer);
+    window.delayer = setTimeout(function () {
+      var item = {};
+      var value = e.target.value;
+      if (e.target.type === 'checkbox' || e.target.type === 'radio') {
+        value = e.target.checked;
+      }
+      item[e.target.id] = {
+        value: value,
+        type: e.target.type
+      };
+      chrome.storage.sync.set(item, function() {
+        // Update status to let user know options were saved.
+        var status = $('#status');
+        status.text('Options saved.');
+        setTimeout(function() {
+          status.text('');
+        }, 750);
+      });
+    }, 500);
   }
 
   // Restores select box and checkbox state using the preferences
@@ -74,12 +77,15 @@ window.Zepto(function($) {
   function restore() {
     // Use default value color = 'red' and likesColor = true.
     chrome.storage.sync.get({
-      enableRotate: true,
-      radioToggle: '1',
-      textInput: '',
-      dropdown: ''
+      enableRotate: {
+        type: 'checkbox',
+        value: true
+      },
+      zoomLevel: {
+        type: 'number',
+        value: 12
+      }
     }, function(items) {
-      console.log(items);
       for(var value in items) {
         if (items[value].type === 'checkbox') {
           $('#' + value).prop('checked', items[value].value);
@@ -90,6 +96,6 @@ window.Zepto(function($) {
     });
   }
   $('input[type=checkbox], input[type=radio]').on('click', save);
-  $('input[type=text], input[type=number], input[type=search], select').on('input', save);
+  $('input[type=text], input[type=number], input[type=search], select').on('keyup', save);
   $(document).ready(restore);
 });

@@ -523,6 +523,7 @@
   min-height: 2em;
   padding: 3px;
   padding-bottom: 4px;
+  width: 210px;
 }
 .chrome-bootstrap .radio,
 .chrome-bootstrap .checkbox {
