@@ -1,5 +1,25 @@
 'use strict';
 
+// default settings
+var settings = {
+  enableRotate: {
+    type: 'checkbox',
+    value: true
+  },
+  enableMap: {
+    type: 'checkbox',
+    value: true
+  },
+  zoomLevel: {
+    type: 'number',
+    value: 15
+  },
+  enableLargeThumbnails: {
+    type: 'checkbox',
+    value: true
+  }
+};
+
 // some nice helpers
 var q = document.querySelector.bind(document);
 var qAll = document.querySelectorAll.bind(document);
@@ -26,26 +46,6 @@ function ajax(addr, blob, callback) {
   };
   xhr.send();
 }
-
-// default settings
-var settings = {
-  enableRotate: {
-    type: 'checkbox',
-    value: true
-  },
-  enableMap: {
-    type: 'checkbox',
-    value: true
-  },
-  zoomLevel: {
-    type: 'number',
-    value: 15
-  },
-  enableLargeThumbnails: {
-    type: 'checkbox',
-    value: true
-  }
-};
 
 function addMap(lat, lng, link) {
   var url = 'https://maps.googleapis.com/maps/api/staticmap?center=' + lat + ',' + lng + '&zoom=' + settings.zoomLevel.value + '&size=547x390&markers=color:blue%7C' + lat + ',' + lng + '&maptype=roadmap&sensor=true';
@@ -164,10 +164,10 @@ function start() {
 }
 
 chrome.storage.sync.get(['zoomLevel', 'enableRotate', 'enableLargeThumbnails', 'enableMap'], function(result) {
-  settings.zoomLevel = result.zoomLevel;
-  settings.enableRotate = result.enableRotate;
-  settings.enableLargeThumbnails = result.enableLargeThumbnails;
-  settings.enableMap = result.enableMap;
+  settings.zoomLevel = (result.zoomLevel) ? result.zoomLevel: settings.zoomLevel;
+  settings.enableRotate = (result.enableRotate) ? result.enableRotate: settings.enableRotate;
+  settings.enableLargeThumbnails = (result.enableLargeThumbnails) ? result.enableLargeThumbnails: settings.enableLargeThumbnails;
+  settings.enableMap = (result.enableMap) ? result.enableMap: settings.enableMap;
   // there is no DOMReady in extensions, we have a start() though
   start();
 });
