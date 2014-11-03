@@ -1,7 +1,9 @@
 kijiji-enhanced
 ===============
 
-A chrome extension to add some niceness to browsing kijiji.com
+A chrome extension to add some niceness to browsing kijiji.com.
+
+[Find it on the Chrome Web Store](http://goo.gl/8VXrlm "Kijiji Enhanced").
 
 #### What Works
 
