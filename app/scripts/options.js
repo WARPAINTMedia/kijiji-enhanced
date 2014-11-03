@@ -81,9 +81,17 @@ window.Zepto(function($) {
         type: 'checkbox',
         value: true
       },
+      enableMap: {
+        type: 'checkbox',
+        value: true
+      },
       zoomLevel: {
         type: 'number',
         value: 15
+      },
+      enableLargeThumbnails: {
+        type: 'checkbox',
+        value: true
       }
     }, function(items) {
       for(var value in items) {

@@ -29,12 +29,20 @@ function ajax(addr, blob, callback) {
 
 // default settings
 var settings = {
-  zoomLevel: {
+  enableRotate: {
     type: 'checkbox',
+    value: true
+  },
+  enableMap: {
+    type: 'checkbox',
+    value: true
+  },
+  zoomLevel: {
+    type: 'number',
     value: 15
   },
-  enableRotate: {
-    type: 'number',
+  enableLargeThumbnails: {
+    type: 'checkbox',
     value: true
   }
 };
@@ -61,7 +69,7 @@ function addMap(lat, lng, link) {
 function doRotate() {
   var container = q('#MainContainer .img-scroll');
   // make sure we are on the right page, and the setting is on
-  if (container && settings.enableRotate.value) {
+  if (container) {
     // add some space for the button
     var area = q('#PageViewImage .centered-item.large-image');
     if (area) {
@@ -144,14 +152,22 @@ function sizeThumbnails() {
 }
 
 function start() {
-  doRotate();
-  sizeThumbnails();
-  getMap();
+  if (settings.enableRotate.value) {
+    doRotate();
+  }
+  if (settings.enableLargeThumbnails.value) {
+    sizeThumbnails();
+  }
+  if (settings.enableMap.value) {
+    getMap();
+  }
 }
 
-chrome.storage.sync.get(['zoomLevel', 'enableRotate'], function(result) {
+chrome.storage.sync.get(['zoomLevel', 'enableRotate', 'enableLargeThumbnails', 'enableMap'], function(result) {
   settings.zoomLevel = result.zoomLevel;
   settings.enableRotate = result.enableRotate;
+  settings.enableLargeThumbnails = result.enableLargeThumbnails;
+  settings.enableMap = result.enableMap;
   // there is no DOMReady in extensions, we have a start() though
   start();
 });
