@@ -51,7 +51,7 @@ function addMap(lat, lng, link) {
   var url = 'https://maps.googleapis.com/maps/api/staticmap?center=' + lat + ',' + lng + '&zoom=' + settings.zoomLevel.value + '&size=547x390&markers=color:blue%7C' + lat + ',' + lng + '&maptype=roadmap&sensor=true';
   ajax(url, true, function(res) {
     var image = new Image();
-    image.src = window.webkitURL.createObjectURL(res);
+    image.src = window.URL.createObjectURL(res);
     image.style.opacity = 1;
     image.height = '390';
     image.width = '547';
@@ -67,64 +67,64 @@ function addMap(lat, lng, link) {
 }
 
 function doRotate() {
-  var container = q('#MainContainer .img-scroll');
-  // make sure we are on the right page, and the setting is on
-  if (container) {
-    // add some space for the button
-    var area = q('#PageViewImage .centered-item.large-image');
-    if (area) {
-      area.style.margin = '40px 0';
-    }
-    var style = ['position: relative;', 'right: 0;', 'top: 12px;', 'border: solid 1px #EC7D1B;', 'border-radius: 5px;', 'background-clip: padding-box;', 'color: #FFF;', 'background: -webkit-gradient(linear,left top,left bottom,color-stop(12%,#FFB929),color-stop(50%,#F39D00));', 'background: -webkit-linear-gradient(top,#FFB929 12%,#F39D00 50%);', 'background: linear-gradient(top,#ffb929 12%,#f39d00 50%);', 'margin: 0;', 'padding: 3px 4px;', 'outline: none;'].join('');
+  // add some space for the button
+  // var area = q('#PageViewImage .centered-item.large-image');
+  // if (area) {
+  //   area.style.margin = '40px 0';
+  // }
+  var style = ['position: relative;', 'right: 0;', 'top: 12px;', 'border: solid 1px #EC7D1B;', 'border-radius: 5px;', 'background-clip: padding-box;', 'color: #FFF;', 'background: -webkit-gradient(linear,left top,left bottom,color-stop(12%,#FFB929),color-stop(50%,#F39D00));', 'background: -webkit-linear-gradient(top,#FFB929 12%,#F39D00 50%);', 'background: linear-gradient(top,#ffb929 12%,#f39d00 50%);', 'margin: 0;', 'padding: 3px 4px;', 'outline: none;'].join('');
 
-    var rotateBtn = '<button type=\"button\" id=\"rotate-image\" style=\"' + style + '\">ROTATE IMAGE</button>';
+  var rotateBtn = '<div style=\"text-align:center\"><button type=\"button\" id=\"rotate-image\" style=\"' + style + '\">ROTATE IMAGE</button></div>';
 
-    q('#MainContainer .img-scroll').innerHTML += rotateBtn;
+  q('.mfp-image-holder .mfp-figure').innerHTML += rotateBtn;
 
-    // set a data-attribute for all the items
-    each('.photo-navigation li.showing a', function(item) {
-      item.setAttribute('data-rotation', 0);
-    });
+  // set a data-attribute for the current image
+  var item = q('.mfp-figure figure');
+  item.setAttribute('data-rotation', 0);
 
-    // now the event listener for the button
-    q('#rotate-image').addEventListener('click', function(event) {
-      event.preventDefault();
-      var item = q('.photo-navigation li.showing a');
-      item.style.display = 'block';
-      // get the rotation
-      var rotation = parseInt(item.getAttribute('data-rotation'), 10);
-      rotation += 90;
-      // firgure out the orientation of this thing
-      var orientation = {
-        '0': 'normal',
-        '0.25': 'right',
-        '0.5': 'bottom',
-        '0.75': 'left'
-      }[((rotation / 360) % 1).toString()];
-      var image = item.querySelector('img');
-      // which side is bigger
-      var prop = (image.offsetWidth >= image.offsetHeight) ? 'offsetWidth' : 'offsetHeight';
-      // assign the attribute
-      item.style.height = image[prop] + 'px';
-      item.style.width = image[prop] + 'px';
-      // adjust the margin for the different orientation
-      if (prop === 'offsetWidth') {
-        var amount = ((image.offsetWidth - image.offsetHeight) / 2).toFixed(1);
-        if (orientation === 'normal') {
-          image.style.margin = '0';
-        } else if (orientation === 'bottom') {
-          image.style.margin = (amount * 2) + 'px 0 0 0';
-        } else {
-          image.style.margin = amount + 'px 0 0 0';
-        }
+  // now the event listener for the button
+  q('#rotate-image').addEventListener('click', function(event) {
+    event.preventDefault();
+    // get the rotation
+    var rotation = parseInt(item.getAttribute('data-rotation'), 10);
+    rotation += 90;
+    // firgure out the orientation of this thing
+    var orientation = {
+      '0': 'normal',
+      '0.25': 'right',
+      '0.5': 'bottom',
+      '0.75': 'left'
+    }[((rotation / 360) % 1).toString()];
+    var image = q('.mfp-img');
+    // which side is bigger
+    var prop = (image.offsetWidth >= image.offsetHeight) ? 'offsetWidth' : 'offsetHeight';
+    // assign the attribute
+    item.style.height = image[prop] + 'px';
+    item.style.width = image[prop] + 'px';
+    // adjust the margin for the different orientation
+    if (prop === 'offsetWidth') {
+      var amount = ((image.offsetWidth - image.offsetHeight) / 2).toFixed(1);
+      if (orientation === 'normal') {
+        image.style.margin = '0';
+      } else if (orientation === 'bottom') {
+        image.style.margin = (amount * 2) + 'px 0 0 0';
+      } else {
+        image.style.margin = amount + 'px 0 0 0';
       }
-      // finally rotate it
-      item.style.transform = 'rotate(' + rotation + 'deg)';
-      // save the attribute for next click
-      item.setAttribute('data-rotation', rotation);
-      return false;
-    });
+    }
+    // finally rotate it
+    item.style.transform = 'rotate(' + rotation + 'deg)';
+    // save the attribute for next click
+    item.setAttribute('data-rotation', rotation);
+    return false;
+  });
+  function cleanUp() {
+    item.setAttribute('data-rotation', 0);
+    item.setAttribute('style', '');
   }
+  each('.mfp-arrow', function(elem) {
+    elem.addEventListener('click', cleanUp);
+  });
 }
 
 function getMap() {
@@ -152,13 +152,15 @@ function sizeThumbnails() {
 }
 
 function start() {
-  if (settings.enableRotate.value) {
-    doRotate();
-  }
-  if (settings.enableLargeThumbnails.value) {
+  if (settings.enableLargeThumbnails.value && q('#PageSRP')) {
     sizeThumbnails();
   }
-  if (settings.enableMap.value) {
+  // run these functions only when looking at a post
+  if (settings.enableRotate.value && q('#MapLightbox')) {
+    q('#ShownImage').addEventListener('click', doRotate);
+    q('#ImageLightBoxLink').addEventListener('click', doRotate);
+  }
+  if (settings.enableMap.value && q('#MapLightbox')) {
     getMap();
   }
 }
